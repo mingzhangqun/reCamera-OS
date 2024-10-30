@@ -54,7 +54,9 @@ function create_disk_mbr() {
     fi
 
     image=$1
-    dd if=/dev/zero of=./${image} bs=512 count=${img_size}
+    df -h
+    # dd if=/dev/zero of=./${image} bs=512 count=${img_size}
+    fallocate -l ${img_size} ${image}
 
     # Create the disk image
     (
@@ -76,8 +78,9 @@ function write_boot_part() {
     fi
 
     local part=$(mktemp)
-
-    dd if=/dev/zero of=${part} bs=512 count=${part_size}
+    df -h
+    # dd if=/dev/zero of=${part} bs=512 count=${part_size}
+    fallocate -l ${part_size} ${part}
     mkfs.vfat -n ${part_label} ${part}
 
     mcopy -i ${part} fip.bin ::
